@@ -8,9 +8,6 @@
 import os
 import sys
 
-import pymel.core as pm
-import maya.utils as mu
-
 
 def add_menu_and_show():
     """
@@ -39,14 +36,18 @@ if __name__ == "__main__":
     # 获取 CGTW 需要加载的环境
     CGTW_ROOT = os.environ.get("CGTW_SOFT_PATH")
     if CGTW_ROOT:
+        import pymel.core as pm
+        import maya.utils as mu
+        
         CGTW_MAYA_PLUGIN = os.path.join(CGTW_ROOT, "bin\\base\\maya_plugin")  # cgtw maya 脚本根路径
         CGTW_BASE = os.path.join(CGTW_ROOT, "bin\\base")  # cgtw 脚本库
-        CGTW_ICON = os.path.join(CGTW_ROOT, "bin\\com_icon")  # cgtw 通用图标
+        CGTW_ICON = os.path.join(CGTW_BASE, "com_icon")  # cgtw 通用图标
+        CGTW_COM_LIB = os.path.join(CGTW_BASE, "com_lib")  # 通用库
 
         CGTW_MAYA_OPEN_START = os.path.join(CGTW_MAYA_PLUGIN, "maya_open_start.mel")  # cgtw 在工具架上添加tool的脚本
 
         # 将路径添加到当前环境
-        for p in [CGTW_MAYA_PLUGIN, CGTW_BASE, CGTW_ICON]:
+        for p in [CGTW_MAYA_PLUGIN, CGTW_BASE, CGTW_ICON, CGTW_COM_LIB]:
             if p not in sys.path:
                 sys.path.append(p)
 
@@ -59,12 +60,13 @@ if __name__ == "__main__":
         sys.argv.append(CGTW_MAYA_OPEN_START)
         cgtw_database = os.environ.get("CGTW_DATABASE")
         if cgtw_database:
+            sys.argv = []
             sys.argv.append(cgtw_database)
             sys.argv.append(os.environ.get("CGTW_MODULE"))
             sys.argv.append(os.environ.get("CGTW_ID"))
 
             # 加载菜单
-            mu.executeDeferred(add_menu_and_show)
+            #mu.executeDeferred(add_menu_and_show)
             # 显示工具
             mu.executeDeferred(show_tools)
     else:
